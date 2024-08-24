@@ -1,24 +1,30 @@
-name: Auto Create Pull Request
+name: Auto PR
 
 on:
   push:
-    branches-ignore:
-      - main  # Ignore pushes to the main branch
+    branches:
+      - main
 
 jobs:
-  create_pr:
+  create_pull_request:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: main
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Auto-generated PR for branch ${{ github.ref_name }}"
-        branch: ${{ github.ref_name }}  # The branch that triggered the workflow
-        base: main  # Base branch to merge into
-        title: "Auto PR: Merging changes from ${{ github.ref_name }}"
-        body: "This PR was automatically created by GitHub Actions."
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the default token
+          commit-message: Auto-generated PR for branch Sankalpayogi-patch-2
+          branch: Sankalpayogi-patch-2
+          base: main
+          title: Auto PR: Merging changes from Sankalpayogi-patch-2
+          body: This PR was automatically created by GitHub Actions.
+          committer: GitHub <noreply@github.com>
+          author: Sankalpayogi <Sankalpayogi@users.noreply.github.com>
+          signoff: false
+          delete-branch: false
+          draft: false
