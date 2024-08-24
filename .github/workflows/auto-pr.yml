@@ -1,0 +1,24 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches:
+      - '*' # Triggers on any branch push
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Auto-generated PR for branch ${{ github.ref_name }}"
+        branch: ${{ github.ref_name }}  # The branch that triggered the workflow
+        base: main  # Base branch to merge into
+        title: "Auto PR: Merging changes from ${{ github.ref_name }}"
+        body: "This PR was automatically created by GitHub Actions."
