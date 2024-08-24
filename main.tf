@@ -8,3 +8,7 @@ resource "aws_instance" "EC2_Server" {
     Name = "TF_EC2"
   }
 }
+
+
+
+
