@@ -1,0 +1,22 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Automated PR from ${{ github.ref }}"
+          body: "Automatically created PR for branch ${{ github.ref }}"
+          base: main
+          branch: ${{ github.ref_name }}
