@@ -2,8 +2,8 @@ name: Auto Create Pull Request
 
 on:
   push:
-    branches-ignore:
-      - main  # Ignore pushes to the main branch
+    branches:
+      - '*' # Triggers on any branch push
 
 jobs:
   create_pr:
