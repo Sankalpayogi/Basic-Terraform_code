@@ -28,3 +28,7 @@ variable "aws_secret_key" {
   description = "AWS secret key"
   default     = "wwOZ6OZWFth+iP572cu7FEXVfM+hdclGFEC1W7B0"
 }
+
+
+
+#adding for test to check
