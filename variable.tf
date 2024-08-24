@@ -21,14 +21,10 @@ variable "ec2_sg" {
 
 variable "aws_access_key" {
   description = "AWS access key"
-  default     = "AKIAZI2LEVLXBN7XNAWQ"
+  default     = "AKIAZI2LEVLXCUW2MVOP"
 }
 
 variable "aws_secret_key" {
   description = "AWS secret key"
-  default     = "wwOZ6OZWFth+iP572cu7FEXVfM+hdclGFEC1W7B0"
+  default     = "DpM8DG0HmfiiGxhnYPE3hbAwz3fxRgW0XdBtaff2"
 }
-
-
-
-#adding for test to check
