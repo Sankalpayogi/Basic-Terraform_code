@@ -11,10 +11,20 @@ variable "ami" {
 }
 
 variable "ec2_key" {
-  default = "newkey"
+  default = "MaziKey"
 }
 
 variable "ec2_sg" {
   type    = string
   default = "launch-wizard-1"
+}
+
+variable "aws_access_key" {
+  description = "AWS access key"
+  default     = "AKIAZI2LEVLXBN7XNAWQ"
+}
+
+variable "aws_secret_key" {
+  description = "AWS secret key"
+  default     = "wwOZ6OZWFth+iP572cu7FEXVfM+hdclGFEC1W7B0"
 }
