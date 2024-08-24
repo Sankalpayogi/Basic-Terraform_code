@@ -18,10 +18,10 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}  # Use the default token
-          commit-message: Auto-generated PR for branch Sankalpayogi-patch-2
+          commit-message: Auto-generated PR for branch ${{ github.ref_name }}
           branch: Sankalpayogi-patch-2
           base: main
-          title: Auto PR: Merging changes from Sankalpayogi-patch-2
+          title: Auto PR: Merging changes from ${{ github.ref_name }}
           body: This PR was automatically created by GitHub Actions.
           committer: GitHub <noreply@github.com>
           author: Sankalpayogi <Sankalpayogi@users.noreply.github.com>
