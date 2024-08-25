@@ -1,39 +1,14 @@
 name: CI/CD Pipeline
 
 on:
+  pull_request:
+    branches:
+      - feature/*
   push:
     branches:
-      - feature/*
-  pull_request:
-    types: [opened, synchronize]
-    branches:
-      - feature/*
-  pull_request_target:
-    types: [closed]
-    branches:
-      - feature/*
+      - main
 
 jobs:
-  create-pr:
-    name: Create Pull Request
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/feature/')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: main
-          title: "Automated PR: Sync feature branch with main"
-          commit-message: "Syncing feature branch with main branch"
-          body: |
-            This PR was automatically created by GitHub Actions to sync the feature branch with the main branch.
-          labels: automated-pr
-          reviewers: your-reviewer-username
-          assignees: your-assignee-username
-
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
@@ -50,27 +25,13 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
-
       - name: Terraform Plan
-        run: terraform plan > plan.txt
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-plan
-          path: plan.txt
-
-      - name: Add plan to PR comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          path: plan.txt
+        run: terraform plan
 
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_target' && github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
