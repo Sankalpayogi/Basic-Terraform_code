@@ -31,8 +31,8 @@ jobs:
           body: |
             This PR was automatically created by GitHub Actions to sync the feature branch with the main branch.
           labels: automated-pr
-          reviewers: your-reviewer-username
-          assignees: your-assignee-username
+          reviewers: Sankalpayogi
+          assignees: Sankalpayogi
 
   terraform-plan:
     name: Terraform Plan
