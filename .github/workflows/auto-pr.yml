@@ -1,0 +1,26 @@
+name: Auto Pull Request
+
+on:
+  push:
+    branches:
+      - '**' # Trigger on push to any branch
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref_name }}
+        base: main # or whatever your default branch is
+        title: "Automatic PR for branch ${{ github.ref_name }}"
+        body: "This PR was created automatically by GitHub Actions."
+        labels: "automated-pr"
+        assignees: "your-github-username" # Optional: Assign PR to someone
+        reviewers: "prafullas, reviewer2" # Optional: Request reviews from team members
