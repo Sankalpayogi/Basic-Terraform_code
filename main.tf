@@ -5,7 +5,7 @@ resource "aws_instance" "EC2_Server" {
   security_groups = [aws_security_group.ec2_security_group.name]
 
   tags = {
-    Name = "TF_EC2"
+    Name = "TF_EC2_Server"
   }
 }
 
