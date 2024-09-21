@@ -1,22 +1,13 @@
-resource "aws_instance" "EC2_App_Server" {
-  ami             = var.ami
-  instance_type   = var.instance_type
-  key_name        = var.ec2_key
-  security_groups = [aws_security_group.ec2_security_group.name]
+resource "aws_instance" "ec2_server" {
+  ami               = var.ami
+  instance_type     = var.instance_type[count.index]
+  availability_zone = var.az[count.index]
+  security_groups   = [aws_security_group.MY-SG.name]
+  count             = 2
 
   tags = {
-    Name = "TF_EC2_Server_1"
+
+    name = var.Instance_name[count.index]
   }
+
 }
-
-resource "aws_instance" "EC2_BTH_Server" {
-  ami             = var.ami
-  instance_type   = var.instance_type
-  key_name        = var.ec2_key
-  security_groups = [aws_security_group.ec2_security_group.name]
-
-  tags = {
-    Name = "TF_EC2_Server_2"
-  }
-}
-
