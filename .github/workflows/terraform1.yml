@@ -201,4 +201,3 @@ jobs:
         curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
         -X POST \
         -d "{\"body\": \"$COMMENT_BODY\"}" \
-        "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
