@@ -61,5 +61,5 @@ jobs:
              -d "{\"body\": \"\`\`\`json\n${COMMENT_BODY}\n\`\`\`\"}" \
              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
       if: github.event_name == 'pull_request'
