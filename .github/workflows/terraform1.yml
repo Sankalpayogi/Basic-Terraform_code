@@ -66,15 +66,88 @@
 
 #**********************************************************************************************************************************
 
+# name: 'Terraform Plan'
+
+# on:
+#   push:
+#     branches:
+#       - '**'          # Triggers on all branches
+#     paths-ignore:
+#       - .github/**    # Ignore changes in the .github folder
+#       - main          # Ignore pushes directly to main
+
+# permissions:
+#   contents: read
+
+# jobs:
+#   terraform:
+#     name: 'Terraform Plan'
+#     runs-on: ubuntu-latest
+#     environment: preproduction
+
+#     defaults:
+#       run:
+#         shell: bash
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v4
+
+#     - name: Setup Terraform
+#       uses: hashicorp/setup-terraform@v1
+#       with:
+#         terraform_version: 1.5.0
+
+#     - name: Terraform Init
+#       run: terraform init
+#       env:
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#     - name: Terraform Plan
+#       run: terraform plan -out=tfplan
+#       env:
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#     # Upload the plan as an artifact to be used in the next job
+#     - name: Upload Terraform Plan
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: terraform-plan
+#         path: tfplan
+
+#     # Read the generated plan and comment on the pull request
+#     - name: Comment on Pull Request with Plan
+#       id: comment
+#       run: |
+#         echo "## Terraform Plan" > plan.md
+#         terraform show -no-color tfplan >> plan.md
+#         cat plan.md
+#       env:
+#         GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
+
+#     # Post a comment on the pull request
+#     - name: Post Comment on PR
+#       uses: peter-evans/create-or-update-comment@v2
+#       with:
+#         issue-number: ${{ github.event.pull_request.number }}
+#         body: |
+#           The Terraform plan has been generated:
+          
+          # ```
+          # ${{ steps.comment.outputs.plan }}
+          # ```
+
+
 name: 'Terraform Plan'
 
 on:
-  push:
+  pull_request:
     branches:
-      - '**'          # Triggers on all branches
+      - '**'  # Triggers on all branches, including when a pull request is created or updated
     paths-ignore:
-      - .github/**    # Ignore changes in the .github folder
-      - main          # Ignore pushes directly to main
+      - .github/**  # Ignore changes in the .github folder
 
 permissions:
   contents: read
@@ -105,36 +178,27 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      id: plan
+      run: |
+        terraform plan -no-color -out=tfplan
+        terraform show -no-color tfplan > plan.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # Upload the plan as an artifact to be used in the next job
+    # Upload the plan as an artifact to be used later (optional)
     - name: Upload Terraform Plan
       uses: actions/upload-artifact@v3
       with:
         name: terraform-plan
         path: tfplan
 
-    # Read the generated plan and comment on the pull request
-    - name: Comment on Pull Request with Plan
-      id: comment
+    # Post the generated Terraform plan as a comment on the pull request
+    - name: Comment on PR
       run: |
-        echo "## Terraform Plan" > plan.md
-        terraform show -no-color tfplan >> plan.md
-        cat plan.md
-      env:
-        GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
-
-    # Post a comment on the pull request
-    - name: Post Comment on PR
-      uses: peter-evans/create-or-update-comment@v2
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          The Terraform plan has been generated:
-          
-          ```
-          ${{ steps.comment.outputs.plan }}
-          ```
+        PLAN_OUTPUT=$(cat plan.txt)
+        COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
+        curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
+        -X POST \
+        -d "{\"body\": \"$COMMENT_BODY\"}" \
+        "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
