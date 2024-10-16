@@ -40,27 +40,30 @@
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
 #********************************************************** Direct for main branch **************************************************************************
-name: 'Terraform-Plan'
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-
-permissions:
-  contents: read
-#***********************************************************************************************************************************************************
-
-#********************************************************** Direct for feature branch ***********************************************
-# name: 'Terraform Plan'
+# name: 'Terraform-Plan'
 
 # on:
 #   push:
-#     branches:
-#       - 'feature/*'  # Runs only on feature branches
+#     branches: [ "main" ]
+#   pull_request:
 
 # permissions:
 #   contents: read
+#***********************************************************************************************************************************************************
+
+#********************************************************** Direct for feature branch ***********************************************
+name: 'Terraform Plan'
+
+on:
+  push:
+    branches:
+      - '**'          # Triggers on all branches
+    paths-ignore:
+      - .github/**    # Ignore changes in the .github folder
+      - main          # Ignore pushes directly to main
+
+permissions:
+  contents: read
 #*************************************************************************************************************************************
   
 jobs:
