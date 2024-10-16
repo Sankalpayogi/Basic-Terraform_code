@@ -127,14 +127,14 @@ jobs:
       env:
         GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
 
-    # # Post a comment on the pull request
-    # - name: Post Comment on PR
-    #   uses: peter-evans/create-or-update-comment@v2
-    #   with:
-    #     issue-number: ${{ github.event.pull_request.number }}
-    #     body: |
-    #       The Terraform plan has been generated:
+    # Post a comment on the pull request
+    - name: Post Comment on PR
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          The Terraform plan has been generated:
           
-    #       ```
-    #       ${{ steps.comment.outputs.plan }}
-          # ```
+          ```
+          ${{ steps.comment.outputs.plan }}
+          ```
