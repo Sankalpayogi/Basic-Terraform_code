@@ -192,12 +192,3 @@ jobs:
       with:
         name: terraform-plan
         path: tfplan
-
-    # Post the generated Terraform plan as a comment on the pull request
-    - name: Comment on PR
-      run: |
-        PLAN_OUTPUT=$(cat plan.txt)
-        COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
-        curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
-        -X POST \
-        -d "{\"body\": \"$COMMENT_BODY\"}" \
