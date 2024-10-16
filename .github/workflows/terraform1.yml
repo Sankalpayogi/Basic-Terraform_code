@@ -55,7 +55,7 @@ jobs:
         echo "## Terraform Plan" >> plan_output.md
         terraform show -json tfplan >> plan_output.md
         COMMENT_BODY=$(<plan_output.md)
-        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
              -H "Content-Type: application/json" \
              -X POST \
              -d "{\"body\": \"\`\`\`json\n${COMMENT_BODY}\n\`\`\`\"}" \
