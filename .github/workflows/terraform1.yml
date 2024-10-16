@@ -1,68 +1,68 @@
-# name: 'Terraform Plan'
+name: 'Terraform Plan'
 
-# on:
-#   push:
-#     branches:
-#       - '**'          # Triggers on all branches
-#     paths-ignore:
-#       - .github/**    # Ignore changes in the .github folder
-#       - main          # Ignore pushes directly to main
+on:
+  push:
+    branches:
+      - '**'          # Triggers on all branches
+    paths-ignore:
+      - .github/**    # Ignore changes in the .github folder
+      - main          # Ignore pushes directly to main
 
-# permissions:
-#   contents: read
+permissions:
+  contents: read
 
-# jobs:
-#   terraform:
-#     name: 'Terraform Plan'
-#     runs-on: ubuntu-latest
-#     environment: preproduction
+jobs:
+  terraform:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    environment: preproduction
 
-#     defaults:
-#       run:
-#         shell: bash
+    defaults:
+      run:
+        shell: bash
 
-#     steps:
-#     - name: Checkout
-#       uses: actions/checkout@v4
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-#     - name: Setup Terraform
-#       uses: hashicorp/setup-terraform@v1
-#       with:
-#         terraform_version: 1.5.0
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.5.0
 
-#     - name: Terraform Init
-#       run: terraform init
-#       env:
-#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name: Terraform Init
+      run: terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-#     - name: Terraform Plan
-#       run: terraform plan -out=tfplan
-#       env:
-#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-#     # Upload the plan as an artifact to be used in the next job
-#     - name: Upload Terraform Plan
-#       uses: actions/upload-artifact@v3
-#       with:
-#         name: terraform-plan
-#         path: tfplan
+    # Upload the plan as an artifact to be used in the next job
+    - name: Upload Terraform Plan
+      uses: actions/upload-artifact@v3
+      with:
+        name: terraform-plan
+        path: tfplan
 
-#     # Comment the Terraform plan in the pull request
-#     - name: Comment Terraform Plan
-#       run: |
-#         echo "## Terraform Plan" >> plan_output.md
-#         terraform show -json tfplan >> plan_output.md
-#         COMMENT_BODY=$(<plan_output.md)
-#         curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
-#              -H "Content-Type: application/json" \
-#              -X POST \
-#              -d "{\"body\": \"\`\`\`json\n${COMMENT_BODY}\n\`\`\`\"}" \
-#              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
-#       env:
-#         GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
-#       if: github.event_name == 'pull_request'
+    # Comment the Terraform plan in the pull request
+    - name: Comment Terraform Plan
+      run: |
+        echo "## Terraform Plan" >> plan_output.md
+        terraform show -json tfplan >> plan_output.md
+        COMMENT_BODY=$(<plan_output.md)
+        curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
+             -H "Content-Type: application/json" \
+             -X POST \
+             -d "{\"body\": \"\`\`\`json\n${COMMENT_BODY}\n\`\`\`\"}" \
+             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+      env:
+        GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
+      if: github.event_name == 'pull_request'
 
 #**********************************************************************************************************************************
 
@@ -140,55 +140,55 @@
           # ```
 
 
-name: 'Terraform Plan'
+# name: 'Terraform Plan'
 
-on:
-  pull_request:
-    branches:
-      - '**'  # Triggers on all branches, including when a pull request is created or updated
-    paths-ignore:
-      - .github/**  # Ignore changes in the .github folder
+# on:
+#   pull_request:
+#     branches:
+#       - '**'  # Triggers on all branches, including when a pull request is created or updated
+#     paths-ignore:
+#       - .github/**  # Ignore changes in the .github folder
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-jobs:
-  terraform:
-    name: 'Terraform Plan'
-    runs-on: ubuntu-latest
-    environment: preproduction
+# jobs:
+#   terraform:
+#     name: 'Terraform Plan'
+#     runs-on: ubuntu-latest
+#     environment: preproduction
 
-    defaults:
-      run:
-        shell: bash
+#     defaults:
+#       run:
+#         shell: bash
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.5.0
+#     - name: Setup Terraform
+#       uses: hashicorp/setup-terraform@v1
+#       with:
+#         terraform_version: 1.5.0
 
-    - name: Terraform Init
-      run: terraform init
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#     - name: Terraform Init
+#       run: terraform init
+#       env:
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Terraform Plan
-      id: plan
-      run: |
-        terraform plan -no-color -out=tfplan
-        terraform show -no-color tfplan > plan.txt
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#     - name: Terraform Plan
+#       id: plan
+#       run: |
+#         terraform plan -no-color -out=tfplan
+#         terraform show -no-color tfplan > plan.txt
+#       env:
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # Upload the plan as an artifact to be used later (optional)
-    - name: Upload Terraform Plan
-      uses: actions/upload-artifact@v3
-      with:
-        name: terraform-plan
-        path: tfplan
+#     # Upload the plan as an artifact to be used later (optional)
+#     - name: Upload Terraform Plan
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: terraform-plan
+#         path: tfplan
