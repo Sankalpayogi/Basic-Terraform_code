@@ -27,7 +27,7 @@ resource "aws_security_group" "MY-SG" {
 
   }
 
-
+}
 
 #*************************************** Expanded SG *******************************
 #resource "aws_security_group" "ec2_security_group" {
