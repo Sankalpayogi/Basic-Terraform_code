@@ -39,16 +39,29 @@
 #       with:
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-name: 'Terraform-Plan'
+#********************************************************** Direct for main branch **************************************************************************
+# name: 'Terraform-Plan'
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+
+# permissions:
+#   contents: read
+#***********************************************************************************************************************************************************
+
+name: 'Terraform Plan'
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
+    branches:
+      - 'feature/*'  # Runs only on feature branches
 
 permissions:
   contents: read
 
+  
 jobs:
   terraform:
     name: 'Terraform-Plan'
