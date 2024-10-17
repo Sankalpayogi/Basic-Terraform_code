@@ -104,7 +104,7 @@ jobs:
     # Generate Terraform plan and save it to a binary file (required for apply)
     - name: Terraform Plan
       run: |
-        terraform plan -out=tfplan  # Generate and save the plan to tfplan binary file
+        terraform plan -input=false -out=plan.out  # Generate and save the plan to tfplan binary file
         terraform show -no-color tfplan > plan.txt  # Save human-readable plan to plan.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
