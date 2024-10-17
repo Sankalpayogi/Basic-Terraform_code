@@ -81,11 +81,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    # Install the latest version of Terraform CLI
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.5.0  # Optional: specify Terraform version
+    # # Install the latest version of Terraform CLI
+    # - name: Setup Terraform
+    #   uses: hashicorp/setup-terraform@v1
+    #   with:
+    #     terraform_version: 1.5.0  # Optional: specify Terraform version
 
     # Initialize Terraform with AWS credentials passed
     - name: Terraform Init
