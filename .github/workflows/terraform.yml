@@ -57,14 +57,14 @@ name: 'Terraform Plan'
 on:
   push:
     branches:
-      - '**'          # Triggers on all branches
+      - '**'          # Triggers on all branches except main
     paths-ignore:
       - .github/**    # Ignore changes in the .github folder
       - main          # Ignore pushes directly to main
 
 permissions:
   contents: read
-  pull-requests: write   # Ensure the workflow has permission to comment on the pull request
+  pull-requests: write   # Permission to comment on the PR
 
 jobs:
   terraform:
@@ -94,18 +94,18 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # Check Terraform configuration format
+    # Format Terraform configuration
     - name: Terraform Format
       run: terraform fmt -check
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # Generate Terraform plan and save it to a file
+    # Generate Terraform plan and save it to a binary file (required for apply)
     - name: Terraform Plan
       run: |
-        terraform plan -out=tfplan
-        terraform show -no-color tfplan > plan.txt  # Save the plan to 'plan.txt'
+        terraform plan -out=tfplan  # Generate and save the plan to tfplan binary file
+        terraform show -no-color tfplan > plan.txt  # Save human-readable plan to plan.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -117,7 +117,7 @@ jobs:
           PLAN_OUTPUT=$(cat plan.txt)
           COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
           echo "Posting comment to PR #${{ github.event.pull_request.number }}"
-          curl -v -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -v -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
           -H "Content-Type: application/json" \
           -X POST \
           -d "{\"body\": \"$COMMENT_BODY\"}" \
@@ -126,6 +126,7 @@ jobs:
           echo "Error: plan.txt not found!"
           exit 1
         fi
+
 
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
