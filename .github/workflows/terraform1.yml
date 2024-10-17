@@ -44,24 +44,6 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # # Upload the plan as an artifact to be used in the next job
-    # - name: Upload Terraform Plan
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: terraform-plan
-    #     path: tfplan
-
-    # Read the generated plan and comment on the pull request
-    - name: Comment on Pull Request with Plan
-      id: comment
-      run: |
-        echo "## Terraform Plan" > plan.md
-        terraform show -no-color tfplan >> plan.md
-        cat plan.md
-      # env:
-      #   GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
-
-
 # name: 'Terraform Plan'
 
 # on:
