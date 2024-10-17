@@ -105,24 +105,8 @@ jobs:
     - name: Terraform Plan
       run: |
         terraform plan -input=false -out=tfplan  # Generate and save the plan to tfplan binary file
-        terraform show -no-color tfplan > plan.txt  # Save human-readable plan to plan.txt
+        # terraform show -no-color tfplan > plan.txt  # Save human-readable plan to plan.txt
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    # Post the Terraform plan as a comment on the PR
-    - name: Post Plan in PR
-      run: |
-        if [ -f "plan.txt" ]; then
-          PLAN_OUTPUT=$(cat plan.txt)
-          COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
-          echo "Posting comment to PR #${{ github.event.pull_request.number }}"
-          curl -v -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"body\": \"$COMMENT_BODY\"}" \
-          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
-        else
-          echo "Error: plan.txt not found!"
-          exit 1
-        fi
