@@ -113,3 +113,13 @@ jobs:
     # - name: Terraform Apply
       # if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
       # run: terraform apply -auto-approve -input=false
+
+    - name: Post Plan in PR
+      if: github.event_name == 'pull_request'  # Only comment if this is a PR
+      run: |
+        PLAN_OUTPUT=$(cat plan.txt)
+        COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
+        curl -s -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
+        -X POST \
+        -d "{\"body\": \"$COMMENT_BODY\"}" \
+        "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
