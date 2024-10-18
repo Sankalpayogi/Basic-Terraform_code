@@ -180,16 +180,16 @@ jobs:
     # Post the Terraform plan as a comment on the PR
     - name: Post Plan in PR
       run: |
-        if [ -f "plan.txt" ]; then
+          if [ -f "plan.txt" ]; then
           PLAN_OUTPUT=$(cat plan.txt)
-          COMMENT_BODY="## Terraform Plan\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
+          COMMENT_BODY=$(echo "$PLAN_OUTPUT" | jq -Rs .)  # Escape special characters
           echo "Posting comment to PR #${{ github.event.pull_request.number }}"
           curl -v -H "Authorization: token ${{ secrets.GHUB_TOKEN }}" \
           -H "Content-Type: application/json" \
           -X POST \
-          -d "{\"body\": \"$COMMENT_BODY\"}" \
+          -d "{\"body\": $COMMENT_BODY}" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
-        else
+          else
           echo "Error: plan.txt not found!"
           exit 1
-        fi
+          fi
